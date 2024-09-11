@@ -60,6 +60,7 @@ Academic Visiting
 
 Honors & Awards
 ======
+* Outstanding Teaching Assistant Award (National School of Development, Peking University), 2024
 * Distinguished Thesis Award (Peking University), 2024
 * Rainbow Bridge Alumni Scholarship, 2023
 * Award for Academic Excellents (Peking University), 2023
