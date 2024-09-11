@@ -75,5 +75,5 @@ Others
   * LATEX, Markdown, MATLAB, Python, QGIS, Stata
 
 * Languages
-  * Modern Languages: Mandarin (native), English (TOEFL iBT: 105/120), Modern Greek (basic)
-  * Ancient Languages: I have taken courses in Hittite, Classical Greek and Sumerian.
+  * Modern Languages: Mandarin (native), English (proficient), Modern Greek (basic)
+  * Ancient Languages: Sumerian, Akkadian, Hittite, Classical Greek
