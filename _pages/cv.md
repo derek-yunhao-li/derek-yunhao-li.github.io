@@ -55,7 +55,7 @@ Teaching Experience
 Academic Visiting
 ======
 * International Guest Student, University of Pennsylvania, Aug 2022 - Dec 2022
-  * School of Art & Science
+  * Partly funded by National School of Development, Peking University
 <br />
 <br />
 
