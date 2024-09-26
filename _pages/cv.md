@@ -16,10 +16,10 @@ My full CV can be downloaded [here](https://derek-yunhao-li.github.io/CV_Yunhao%
 Education
 ======
 * Ph.D student in Assyriology, Yale University, 2024 - Present
-  * Department of Near Eastern Languages \& Civilizations
+  * Department of Near Eastern Languages & Civilizations
 
 * B.A. in Economics & History, Peking University, 2024
-  * School of Economics (Sep 2020 -- Aug 2021), National School of Development (Sep 2021 -- Jul 2024)
+  * School of Economics (Sep 2020 - Aug 2021), National School of Development (Sep 2021 - Jul 2024)
   * Thesis: _"Boll Weevil Everywhere": Impacts of Boll Weevil on Agriculture and Higher Education in the U.S. South (1892-1922)_ (supervised by Prof. Dr. Yiling Zhao)
 <br />
 <br />
@@ -30,12 +30,12 @@ Research Experience
   * Supervisor: Prof. Dr. Yiling Zhao (Department of Economic History, Peking University)
   * Focus: conflicts between Native Americans and European Americans in 19th-century U.S.
 
-* Research Assistant, Oct 2021 – Aug 2022
+* Research Assistant, Oct 2021 - Aug 2022
   * Supervisors: Prof. Dr. Sophie Calder-Wang (Wharton School, University of Pennsylvania),  Dr. Jinlin Li (Harvard Kennedy School \& Harvard Business School)
   * Focus: government venture capital in China
  
-* Research Assistant, Jul 2021 – Dec 2021
-  * Supervisor: Dr. Jinlin Li (Harvard Kennedy School \& Harvard Business School)
+* Research Assistant, Jul 2021 - Dec 2021
+  * Supervisor: Dr. Jinlin Li (Harvard Kennedy School & Harvard Business School)
   * Focus: venture capital and market performance in China
 <br />
 <br />
@@ -54,8 +54,8 @@ Teaching Experience
 
 Academic Visiting
 ======
-* International Guest Student, University of Pennsylvania, Aug 2022 – Dec 2022
-  * School of Art \& Science
+* International Guest Student, University of Pennsylvania, Aug 2022 - Dec 2022
+  * School of Art & Science
 <br />
 <br />
 
