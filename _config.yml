@@ -8,9 +8,9 @@
 
 # Basic Site Settings
 locale                   : "en-US"
-title                    : "Yunhao Li"
+title                    : "Derek Yunhao Li"
 title_separator          : "-"
-name                     : &name "Yunhao Li (Derek)"
+name                     : &name "Derek Yunhao Li"
 description              : &description "personal description"
 url                      : https://derek-yunhao-li.github.io
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
@@ -22,7 +22,7 @@ repository               : "derek-yunhao-li/derek-yunhao-li.github.io"
 author:
   # Biographic information
   avatar           : "profile.jpg"
-  name             : "Yunhao Li"
+  name             : "Derek Yunhao Li"
   pronouns         : "he/him/his"  
   bio              : # "PhD student in Assyriology"
   location         : "New Haven, CT"
