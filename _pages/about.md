@@ -14,5 +14,3 @@ My research focuses on the economic, social, and environmental history of ancien
 I graduated from Peking University in July 2024 with dual bachelor's degrees in Economics and History.
 
 My CV can be downloaded [here](https://derek-yunhao-li.github.io/CV_Derek%20Yunhao%20Li.pdf).
-
-Contact: derek.yunhao.li@gmail.com
