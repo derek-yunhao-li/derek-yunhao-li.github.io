@@ -22,14 +22,14 @@
         pixelsPerParticle: 13000,
 
         // Movement speed in CSS pixels per second.
-        minimumSpeed: 10,
-        maximumSpeed: 22,
+        minimumSpeed: 11,
+        maximumSpeed: 23,
 
         // Maximum distance for lines between ordinary particles.
-        particleConnectionRadius: 82,
+        particleConnectionRadius: 85,
 
         // Maximum distance for lines extending from the cursor.
-        cursorConnectionRadius: 145,
+        cursorConnectionRadius: 148,
 
         // Higher values make the visual cursor catch up more quickly.
         cursorSmoothing: 18,
