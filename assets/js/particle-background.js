@@ -18,7 +18,7 @@
     const settings = {
         // Particle density is also adjusted automatically for screen size.
         minimumParticles: 36,
-        maximumParticles: 100,
+        maximumParticles: 105,
         pixelsPerParticle: 13000,
 
         // Movement speed in CSS pixels per second.
@@ -38,6 +38,16 @@
         dotSize: 1.2,
         dotAlpha: 0.58,
         maximumLineAlpha: 0.48,
+
+        // Cursor attraction physics.
+        cursorAttractionRadius: 145,
+        cursorAttractionStrength: 180,
+        cursorAttractionDamping: 6,
+        cursorSofteningRadius: 20,
+
+        // Gradually restore each particle's natural movement.
+        velocityRecovery: 1.8,
+        maximumParticleSpeed: 55,
 
         // Avoid excessively large canvas buffers on very high-DPI screens.
         maximumDevicePixelRatio: 2
