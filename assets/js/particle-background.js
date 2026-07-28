@@ -79,16 +79,28 @@
 
     function createParticle() {
         const angle = Math.random() * Math.PI * 2;
+    
         const speed = randomBetween(
             settings.minimumSpeed,
             settings.maximumSpeed
         );
-
+    
+        const velocityX = Math.cos(angle) * speed;
+        const velocityY = Math.sin(angle) * speed;
+    
         return {
             x: Math.random() * viewportWidth,
             y: Math.random() * viewportHeight,
-            velocityX: Math.cos(angle) * speed,
-            velocityY: Math.sin(angle) * speed
+    
+            velocityX,
+            velocityY,
+    
+            /*
+             * The particle gradually returns to this natural drifting
+             * velocity after the cursor stops influencing it.
+             */
+            driftVelocityX: velocityX,
+            driftVelocityY: velocityY
         };
     }
 
@@ -190,35 +202,192 @@
 
     function updateParticle(particle, deltaSeconds) {
         if (!reducedMotionQuery.matches) {
+            /*
+             * Gradually restore the particle's ordinary drifting
+             * velocity after cursor interaction.
+             *
+             * Exponential interpolation makes this independent of
+             * display refresh rate.
+             */
+            const recovery =
+                1 -
+                Math.exp(
+                    -settings.velocityRecovery * deltaSeconds
+                );
+    
+            particle.velocityX +=
+                (
+                    particle.driftVelocityX -
+                    particle.velocityX
+                ) * recovery;
+    
+            particle.velocityY +=
+                (
+                    particle.driftVelocityY -
+                    particle.velocityY
+                ) * recovery;
+    
+            if (pointer.active) {
+                const differenceX =
+                    pointer.x - particle.x;
+    
+                const differenceY =
+                    pointer.y - particle.y;
+    
+                const distanceSquared =
+                    differenceX * differenceX +
+                    differenceY * differenceY;
+    
+                const attractionRadius =
+                    settings.cursorAttractionRadius;
+    
+                const attractionRadiusSquared =
+                    attractionRadius * attractionRadius;
+    
+                if (
+                    distanceSquared <
+                    attractionRadiusSquared
+                ) {
+                    const distance =
+                        Math.sqrt(distanceSquared);
+    
+                    const normalizedDistance =
+                        distance / attractionRadius;
+    
+                    /*
+                     * Smoothstep falloff:
+                     *
+                     * - strongest near the cursor
+                     * - gradually decreases with distance
+                     * - reaches exactly zero at the outer boundary
+                     *
+                     * Unlike the original script, there is no abrupt
+                     * on/off threshold.
+                     */
+                    const smoothStep =
+                        normalizedDistance *
+                        normalizedDistance *
+                        (
+                            3 -
+                            2 * normalizedDistance
+                        );
+    
+                    const influence =
+                        1 - smoothStep;
+    
+                    /*
+                     * Prevent unstable direction changes when the
+                     * particle is extremely close to the cursor.
+                     */
+                    const softenedDistance =
+                        Math.max(
+                            distance,
+                            settings.cursorSofteningRadius
+                        );
+    
+                    const directionX =
+                        differenceX / softenedDistance;
+    
+                    const directionY =
+                        differenceY / softenedDistance;
+    
+                    const acceleration =
+                        settings.cursorAttractionStrength *
+                        influence;
+    
+                    particle.velocityX +=
+                        directionX *
+                        acceleration *
+                        deltaSeconds;
+    
+                    particle.velocityY +=
+                        directionY *
+                        acceleration *
+                        deltaSeconds;
+    
+                    /*
+                     * Damping prevents particles from repeatedly
+                     * overshooting and oscillating around the cursor.
+                     */
+                    const damping =
+                        Math.exp(
+                            -settings.cursorAttractionDamping *
+                            influence *
+                            deltaSeconds
+                        );
+    
+                    particle.velocityX *= damping;
+                    particle.velocityY *= damping;
+                }
+            }
+    
+            /*
+             * Prevent a particle from becoming excessively fast after
+             * prolonged cursor interaction.
+             */
+            const speed = Math.hypot(
+                particle.velocityX,
+                particle.velocityY
+            );
+    
+            if (
+                speed >
+                settings.maximumParticleSpeed
+            ) {
+                const speedScale =
+                    settings.maximumParticleSpeed / speed;
+    
+                particle.velocityX *= speedScale;
+                particle.velocityY *= speedScale;
+            }
+    
             particle.x +=
                 particle.velocityX * deltaSeconds;
-
+    
             particle.y +=
                 particle.velocityY * deltaSeconds;
         }
-
+    
+        /*
+         * Bounce both the current velocity and natural drift velocity
+         * at the screen boundaries.
+         */
         if (particle.x <= 0) {
             particle.x = 0;
-            particle.velocityX = Math.abs(
-                particle.velocityX
-            );
+    
+            particle.velocityX =
+                Math.abs(particle.velocityX);
+    
+            particle.driftVelocityX =
+                Math.abs(particle.driftVelocityX);
         } else if (particle.x >= viewportWidth) {
             particle.x = viewportWidth;
-            particle.velocityX = -Math.abs(
-                particle.velocityX
-            );
+    
+            particle.velocityX =
+                -Math.abs(particle.velocityX);
+    
+            particle.driftVelocityX =
+                -Math.abs(particle.driftVelocityX);
         }
-
+    
         if (particle.y <= 0) {
             particle.y = 0;
-            particle.velocityY = Math.abs(
-                particle.velocityY
-            );
-        } else if (particle.y >= viewportHeight) {
+    
+            particle.velocityY =
+                Math.abs(particle.velocityY);
+    
+            particle.driftVelocityY =
+                Math.abs(particle.driftVelocityY);
+        } else if (
+            particle.y >= viewportHeight
+        ) {
             particle.y = viewportHeight;
-            particle.velocityY = -Math.abs(
-                particle.velocityY
-            );
+    
+            particle.velocityY =
+                -Math.abs(particle.velocityY);
+    
+            particle.driftVelocityY =
+                -Math.abs(particle.driftVelocityY);
         }
     }
 
@@ -323,9 +492,8 @@
             }
 
             /*
-             * The cursor participates only as a line endpoint.
-             * It does not alter particle positions, which eliminates
-             * the oscillation in the original implementation.
+             * Draw connections between the cursor and nearby particles.
+             * Cursor attraction itself is handled in updateParticle().
              */
             if (pointer.active) {
                 drawLine(
