@@ -1,0 +1,7 @@
+{
+  "rules_sha256": "ab8ba75ec38c53bc5d1eea20f2e18b18977e7becf828681cc3dc5490aa4881f1",
+  "engine_sha256": "026095e50d66d39cda0528ede5051e7b7b3dacf6ba8f9dde95559fa1db6c5129",
+  "guide_sha256": "68349e0e11139ba2b4fa33cbc50d47c5596d14fe976ce88492d35cc153eca52f",
+  "scenario_id": "YATS-WEB-2.1.0",
+  "student_sections": 18
+}
