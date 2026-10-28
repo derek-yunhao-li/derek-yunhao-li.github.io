@@ -1,5 +1,5 @@
 // Pure game engine: no DOM, storage, network, or framework dependencies.
-// Quantities are minas (metals) or pieces (cloth); money is silver shekels.
+// Quantities are minas (metals) or pieces (textiles); money is silver shekels.
 import { RULES } from './rules.js';
 export const EPS = 1e-7;
 const EXPORTS = ['tin','textile','fine_textile'];
@@ -8,16 +8,16 @@ export class GameError extends Error {}
 function requireThat(condition, message) { if (!condition) throw new GameError(message); }
 function positive(n) { requireThat(typeof n==='number' && Number.isFinite(n) && n>0, 'Enter a positive, finite amount.'); return n; }
 export class Game {
-  constructor(seed='', team='The Assur House', rules=RULES) {
+  constructor(seed='', team='Assur trader', rules=RULES) {
     this.rules=clone(rules);
     this.seed=String(seed || globalThis.crypto?.randomUUID?.() || Date.now()).slice(0,80);
     this.randomState=2166136261;
     for(const c of this.seed) this.randomState=Math.imul(this.randomState^c.charCodeAt(0),16777619)>>>0;
     const r=this.rules,m=r.markets;
     const close=r.season.base_days+this.roll(r.season.dice);
-    this.s={team:String(team).trim().slice(0,60)||'The Assur House',day:0,close,
+    this.s={team:String(team).trim().slice(0,60)||'Assur trader',day:0,close,
       deadline:close+r.season.foot_grace_base+this.roll(r.season.foot_grace_dice),
-      city:'assur',purse:r.starting_silver,bank:0,principal:r.starting_silver,emergency:0,interest:0,
+      city:'assur',purse:r.starting_silver,bank:0,principal:r.starting_silver,emergency:0,
       donkeys:0,wagon:null,inventory:Object.fromEntries(Object.keys(r.goods).map(k=>[k,{qty:0,basis:0,cleared:0}])),
       journey:null,event:null,finished:false,jailed:false,result:null,log:[],ledger:[],
       epoch:'',quotes:{},source:{},donkeyPeriod:-1,donkeyStock:0,
@@ -25,7 +25,7 @@ export class Game {
       nextFine:this.roll(m.fine_restock_dice)*m.fine_restock_days_per_roll,ironStock:0,
       tinChange:m.tin_change_day_base+this.integer(-m.tin_change_day_spread,m.tin_change_day_spread),wool:[],transfers:[]};
     this.refreshMarkets();
-    this.note('The house opens',`${this.s.team} receives ${r.starting_silver} silver on credit. Caravans must arrive by day ${close}; final books close on day ${this.s.deadline}.`);
+    this.note('Game begins',`${this.s.team} receives an interest-free loan of ${r.starting_silver} shekels of silver. Caravans must arrive by day ${close}; final accounting is on day ${this.s.deadline}.`);
   }
   random() {
     this.randomState=(this.randomState+0x6D2B79F5)>>>0;
@@ -37,7 +37,7 @@ export class Game {
   signed(dice) { return this.roll(dice)*(this.random()<.5?-1:1); }
   name(city=this.s.city) { return this.rules.cities[city].name; }
   qty(key) { return key==='donkey'?this.s.donkeys:this.s.inventory[key].qty; }
-  debt() { return this.s.principal+this.s.emergency+this.s.interest; }
+  debt() { return this.s.principal+this.s.emergency; }
   available() { return this.s.purse+(this.s.city==='assur'&&!this.s.journey?this.s.bank:0); }
   note(title,text,kind='info') { this.s.log.push({day:this.s.day,title,text,kind}); }
   entry(category,amount,text) { this.s.ledger.push({day:this.s.day,category,amount,purse:this.s.purse,bank:this.s.bank,debt:this.debt(),text}); }
@@ -52,7 +52,7 @@ export class Game {
   }
   receive(amount,text,bank=false) { this.s[bank?'bank':'purse']+=amount;this.entry('Receipt',amount,text); }
   active(town=false) {
-    requireThat(!this.s.finished,'This season has ended. Start a new house to play again.');
+    requireThat(!this.s.finished,'This game has ended. Start a new game to play again.');
     requireThat(!this.s.event,'Resolve the road decision first.');
     if(town) requireThat(!this.s.journey,'Arrive in town before doing business.');
   }
@@ -164,11 +164,11 @@ export class Game {
     this.s.wagon=wagon;this.note('Transport changed',wagon?`Hired a ${this.rules.wagons[wagon].name.toLowerCase()}. Rent accrues every day, including in town.`:'Released the wagon. Rent has stopped.');
   }
   deposit(amount) { this.active(true);positive(amount);requireThat(this.s.city==='assur'&&amount<=this.s.purse+EPS,'Deposit available purse silver while in Assur.');this.s.purse=Math.max(0,this.s.purse-amount);this.s.bank+=amount;this.entry('Deposit',amount,'Silver secured in Assur'); }
-  withdraw(amount) { this.active(true);positive(amount);requireThat(this.s.city==='assur'&&amount<=this.s.bank+EPS,'Withdraw available house silver while in Assur.');this.s.bank=Math.max(0,this.s.bank-amount);this.s.purse+=amount;this.entry('Withdrawal',amount,'House account to purse'); }
+  withdraw(amount) { this.active(true);positive(amount);requireThat(this.s.city==='assur'&&amount<=this.s.bank+EPS,'Withdraw silver from your Assur account while in Assur.');this.s.bank=Math.max(0,this.s.bank-amount);this.s.purse+=amount;this.entry('Withdrawal',amount,'Assur account to purse'); }
   repay(amount) {
     this.active(true);positive(amount);requireThat(this.s.city==='assur','Repay creditors in Assur.');requireThat(amount<=this.debt()+EPS&&amount<=this.available()+EPS,'Repayment exceeds available silver or debt.');
     const cash=Math.min(amount,this.s.purse);this.s.purse-=cash;this.s.bank=Math.max(0,this.s.bank-(amount-cash));let left=amount;
-    for(const key of ['interest','emergency','principal']){const paid=Math.min(left,this.s[key]);this.s[key]=Math.max(0,this.s[key]-paid);left-=paid;}
+    for(const key of ['emergency','principal']){const paid=Math.min(left,this.s[key]);this.s[key]=Math.max(0,this.s[key]-paid);left-=paid;}
     this.entry('Repayment',-amount,'Creditors in Assur');this.note('Credit repaid',`Repaid ${amount.toFixed(2)} silver.`,'good');
   }
   remit(amount) {
@@ -190,8 +190,8 @@ export class Game {
   uncleared() { return EXPORTS.some(k=>this.s.inventory[k].qty-this.s.inventory[k].cleared>EPS); }
   shares() {
     const tin=this.qty('tin')*this.s.source.tin;
-    const cloth=this.qty('textile')*this.s.source.textile+this.qty('fine_textile')*this.s.source.fine_textile;
-    return tin+cloth>EPS?[tin/(tin+cloth),cloth/(tin+cloth)]:[0,0];
+    const textiles=this.qty('textile')*this.s.source.textile+this.qty('fine_textile')*this.s.source.fine_textile;
+    return tin+textiles>EPS?[tin/(tin+textiles),textiles/(tin+textiles)]:[0,0];
   }
   timeRange(id,pace='normal') {
     const road=this.route(id),[n,s]=road.days_dice;
@@ -214,9 +214,9 @@ export class Game {
     requireThat(this.load()<=this.s.donkeys+EPS,'The caravan is overloaded.');
     requireThat(!this.s.wagon||id==='durhumit_purushhaddum','Release the copper wagon before taking another road.');
     requireThat(!this.qty('iron')||road.smuggling,'Unlicensed iron can only use Smuggler’s Track. Sell or discard it first.');
-    if(this.s.city==='assur'&&EXPORTS.some(k=>this.qty(k)>EPS)) requireThat(Math.min(...this.shares())+EPS>=this.rules.caravan.minimum_export_share,'Your export needs both tin and cloth, each at least one tenth of their combined value.');
+    if(this.s.city==='assur'&&EXPORTS.some(k=>this.qty(k)>EPS)) requireThat(Math.min(...this.shares())+EPS>=this.rules.caravan.minimum_export_share,'Your export needs both tin and textiles, each at least one tenth of their combined value.');
     const cutoff=this.solo()?this.s.deadline:this.s.close;
-    requireThat(this.s.day+this.timeRange(id,pace)[1]<=cutoff,'The roadmasters cannot guarantee arrival before closure. Choose a shorter road, drive harder, or travel alone after selling the caravan.');
+    requireThat(this.s.day+this.timeRange(id,pace)[1]<=cutoff,'Even the longest expected journey must fit before the travel deadline. Leave earlier, choose another road or pace, or sell all transport and goods to travel on foot.');
     const destination=road.a===this.s.city?road.b:road.a;
     let days=road.days_base+(road.days_signed?this.signed(road.days_dice):this.roll(road.days_dice));
     if(pace==='hard'&&!this.solo())days=Math.ceil(days/(1+this.rules.caravan.hard_driving_speed_bonus));
@@ -224,11 +224,10 @@ export class Game {
     this.pay(this.fees(id),'Road fees',road.name,true);
     this.s.journey={id,origin:this.s.city,destination,total:days,hazardDays:days,left:days,elapsed:0,pace,escort:!!escort,
       inspectionDay:this.integer(1,days),inspected:false,lodgeStock:0,lodgePrice:0,lodgeSell:0};
-    this.note('Departure',`Left ${this.name()} for ${this.name(destination)}. The guide now expects ${days} days, including any Kaneš clearance.`);
+    this.note('Departure',`Left ${this.name()} for ${this.name(destination)}. The planned journey is ${days} days, including any Kaneš clearance.`);
   }
   dailyAccounts() {
     const s=this.s,f=this.rules.finance;
-    s.interest+=s.emergency*f.annual_interest/365+(s.day>s.close?s.principal*f.annual_interest/365:0);
     this.pay(this.dailyCost(s.journey?.escort,!!s.journey),'Daily costs','Living, travel, and any wagon rent',true);
     const w=this.rules.wool;
     for(const lot of s.wool)if(!lot.sold&&s.day>=w.sale_day){
@@ -237,7 +236,7 @@ export class Game {
       lot.sold=true;lot.proceeds=net;s.transfers.push({amount:net,due:s.day+f.remittance_days,kind:'Wool proceeds'});
       this.note('Letter from the wool agent',`The wool has sold. Net ${net.toFixed(2)} silver is due in Assur on day ${s.day+f.remittance_days}.`,'good');
     }
-    for(const transfer of [...s.transfers])if(s.day>=transfer.due){this.receive(transfer.amount,transfer.kind,true);s.transfers.splice(s.transfers.indexOf(transfer),1);this.note('Silver reaches Assur',`${transfer.amount.toFixed(2)} silver credited to your house.`,'good');}
+    for(const transfer of [...s.transfers])if(s.day>=transfer.due){this.receive(transfer.amount,transfer.kind,true);s.transfers.splice(s.transfers.indexOf(transfer),1);this.note('Silver reaches Assur',`${transfer.amount.toFixed(2)} silver credited to your Assur account.`,'good');}
   }
   advance(days=1) {
     this.active();requireThat(Number.isInteger(days)&&days>=1&&days<=60,'Choose between one and sixty whole days.');
@@ -245,7 +244,7 @@ export class Game {
     for(let i=0;i<days&&!this.s.finished&&!this.s.event;i++){
       this.s.day++;this.refreshMarkets();this.dailyAccounts();
       if(this.s.journey)this.roadDay();else this.mortality(false);
-      if(this.s.day===this.s.close)this.note('Caravan season closes','Only travelers without goods, animals, or a wagon can still depart. Original-credit interest begins tomorrow.','warning');
+      if(this.s.day===this.s.close)this.note('Caravan season closes','Only travelers without goods, animals, or a wagon can still depart.','warning');
       if(this.s.day>=this.s.deadline&&!this.s.finished)this.closeBooks('The final accounting deadline has arrived.');
       if(startedOnRoad&&!this.s.journey)break;
     }
@@ -268,14 +267,14 @@ export class Game {
       if(this.random()<1-(1-chance)**(1/j.hazardDays)){
         for(const k of Object.keys(this.s.inventory))if(this.qty(k))this.remove(k,this.qty(k));
         this.s.donkeys=0;this.s.wagon=null;
-        this.s.event={kind:'loss',title:'The consignment is lost',text:'An attack scatters the caravan. Cargo, animals, and any wagon are lost. You escape with your purse; your house account and agents remain safe.'};
+        this.s.event={kind:'loss',title:'The consignment is lost',text:'An attack scatters the caravan. Cargo, animals, and any wagon are lost. You escape with your purse; your Assur account and agents remain safe.'};
         this.note('Caravan lost',this.s.event.text,'danger');
       }
     }
     if(!this.s.event)this.mortality(j.pace==='hard');
     if(!this.s.event&&j.left>0&&this.random()<c.incident_chance_per_day){
       const kind=['guide','repair','news'][this.integer(0,2)];
-      if(kind==='news')this.note('News at the lodging','Other merchants warn that a rich sale is of little use if its silver cannot reach Assur in time.');
+      if(kind==='news')this.note('News at the lodging','Silver must reach Assur before final accounting to count toward your profit.');
       else {const guide=kind==='guide'||this.solo();this.s.event={kind:guide?'guide':'repair',title:guide?'A damaged crossing':'Fraying pack gear',fee:guide?c.guide_fee:c.repair_fee,delay:guide?c.guide_delay_days:c.repair_delay_days,text:guide?'A local guide knows a passable crossing. Pay for help or spend extra time finding a detour.':'Pay a craft worker to repair the straps, or lose time doing the work yourselves.'};}
     }
     if(j.left<=0&&!this.s.event)this.arrive();
@@ -333,14 +332,14 @@ export class Game {
     const purse=home?this.s.purse:0;
     const unrecovered=(home?Object.keys(this.rules.goods).reduce((a,k)=>a+(this.quote(k,'assur').net===null?this.s.inventory[k].basis:0),0):this.s.purse+this.cargoBasis()+this.s.donkeys*this.quote('donkey').net)
       +this.s.transfers.reduce((a,t)=>a+t.amount,0)+this.s.wool.filter(w=>!w.sold).reduce((a,w)=>a+w.cost,0);
-    return {bank:this.s.bank,purse,cargo,animals,principal:this.s.principal,emergency:this.s.emergency,interest:this.s.interest,debt:this.debt(),unrecovered,profit:this.s.bank+purse+cargo+animals-this.debt()};
+    return {bank:this.s.bank,purse,cargo,animals,principal:this.s.principal,emergency:this.s.emergency,debt:this.debt(),unrecovered,profit:this.s.bank+purse+cargo+animals-this.debt()};
   }
   wealth() { return this.s.purse+this.s.bank+Object.keys(this.rules.goods).reduce((a,k)=>a+this.qty(k)*(this.quote(k).net??this.s.source[k]*.5),0)+this.s.donkeys*this.quote('donkey').net+this.s.transfers.reduce((a,t)=>a+t.amount,0)+this.s.wool.filter(w=>!w.sold).reduce((a,w)=>a+w.cost,0)-this.debt(); }
-  finish() { this.active();this.closeBooks('You closed the season’s books.'); }
+  finish() { this.active();this.closeBooks('You ended the game.'); }
   closeBooks(reason) { this.s.result={...this.settlement(),reason,jailed:this.s.jailed};this.s.finished=true;this.s.event=null;this.note('Final accounting',reason,this.s.jailed?'danger':'good'); }
   snapshot() { return clone({format:'YATS-WEB',version:this.rules.version,seed:this.seed,randomState:this.randomState,rules:this.rules,state:this.s}); }
   static restore(data) {
-    requireThat(data?.format==='YATS-WEB'&&data.version===RULES.version,'This is not a compatible game save.');
+    requireThat(data?.format==='YATS-WEB'&&data.version===RULES.version,'This save uses an earlier or different version of the rules. Start a new game to use the current rules.');
     // Rules are part of the save; this version accepts only this exact scenario.
     requireThat(JSON.stringify(data.rules)===JSON.stringify(RULES),'This save uses different scenario rules.');
     const game=Object.create(Game.prototype);game.rules=clone(data.rules);game.s=clone(data.state);game.seed=String(data.seed);
@@ -348,7 +347,7 @@ export class Game {
   }
   checkInvariants() {
     const s=this.s;requireThat(s&&this.rules.cities[s.city]&&Number.isInteger(s.day)&&s.day>=0&&s.day<=s.deadline,'Damaged game calendar or location.');
-    for(const key of ['purse','bank','principal','emergency','interest','donkeys'])requireThat(typeof s[key]==='number'&&Number.isFinite(s[key])&&s[key]>=-EPS,`Invalid ${key}.`);
+    for(const key of ['purse','bank','principal','emergency','donkeys'])requireThat(typeof s[key]==='number'&&Number.isFinite(s[key])&&s[key]>=-EPS,`Invalid ${key}.`);
     requireThat(Number.isInteger(s.donkeys),'Invalid animal count.');
     for(const k of Object.keys(this.rules.goods)){const lot=s.inventory[k];requireThat(lot&&['qty','basis','cleared'].every(x=>Number.isFinite(lot[x])&&lot[x]>=-EPS)&&lot.cleared<=lot.qty+EPS,'Invalid cargo record.');}
     requireThat(Array.isArray(s.log)&&Array.isArray(s.ledger)&&Array.isArray(s.wool)&&Array.isArray(s.transfers),'Damaged game records.');
@@ -357,7 +356,7 @@ export class Game {
     requireThat(!s.event||s.journey,'A road decision needs a journey.');
     const finite=(n,min=0)=>typeof n==='number'&&Number.isFinite(n)&&n>=min;
     requireThat(Number.isInteger(s.close)&&Number.isInteger(s.deadline)&&s.close>0&&s.deadline>s.close,'Invalid season deadlines.');
-    requireThat(typeof s.team==='string'&&s.team.length<=60&&typeof s.finished==='boolean'&&typeof s.jailed==='boolean','Invalid house metadata.');
+    requireThat(typeof s.team==='string'&&s.team.length<=60&&typeof s.finished==='boolean'&&typeof s.jailed==='boolean','Invalid player or team name.');
     requireThat(s.wagon===null||Object.hasOwn(this.rules.wagons,s.wagon),'Invalid wagon.');
     for(const city of Object.keys(this.rules.cities))for(const key of [...Object.keys(this.rules.goods),'donkey']){
       const q=s.quotes?.[city]?.[key];requireThat(q&&['buy','sell','net'].every(k=>q[k]===null||finite(q[k]))&&finite(q.tax)&&q.tax<=1,'Invalid market quotes.');
@@ -371,6 +370,6 @@ export class Game {
     if(s.event){const e=s.event;requireThat(['guide','repair','loss','overload'].includes(e.kind)&&typeof e.title==='string'&&typeof e.text==='string','Invalid event.');
       if(['guide','repair'].includes(e.kind))requireThat(finite(e.fee)&&Number.isInteger(e.delay)&&e.delay>0,'Invalid road decision.');
       if(e.kind==='overload')requireThat(Number.isInteger(e.count)&&e.count>=0&&finite(e.price),'Invalid replacement offer.');}
-    if(s.finished)requireThat(s.result&&['bank','purse','cargo','animals','principal','emergency','interest','debt','unrecovered'].every(k=>finite(s.result[k]))&&Number.isFinite(s.result.profit)&&typeof s.result.reason==='string'&&typeof s.result.jailed==='boolean','Invalid final accounts.');
+    if(s.finished)requireThat(s.result&&['bank','purse','cargo','animals','principal','emergency','debt','unrecovered'].every(k=>finite(s.result[k]))&&Number.isFinite(s.result.profit)&&typeof s.result.reason==='string'&&typeof s.result.jailed==='boolean','Invalid final accounts.');
   }
 }

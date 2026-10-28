@@ -1,6 +1,6 @@
-// The single numerical source for game mechanics and generated documentation.
+// Editable scenario data. The starting loan has no interest.
 export const RULES = {
-  "_help": "Edit numbers here, then start a NEW game. Existing saves retain their original rules. A dice field is [number_of_dice, sides]. Money is silver shekels; bulk goods use minas (60 shekels of weight).",
+  "_help": "Edit the scenario here, then start a new game. Existing saves must match the current rules. Dice fields are [number_of_dice, sides]. Money is silver shekels; metal quantities are minas.",
   "title": "YATS · The Assur Caravan",
   "year": "1895 BCE",
   "starting_silver": 7200,
@@ -17,7 +17,6 @@ export const RULES = {
     ]
   },
   "finance": {
-    "annual_interest": 0.33,
     "living_per_week": 1,
     "emergency_fee": 0.1,
     "remittance_fee": 0.03,
@@ -148,112 +147,112 @@ export const RULES = {
       "unit": "mina",
       "step": 1,
       "units_per_donkey": 120,
-      "description": "Lightly priced in Assur, valuable to Anatolian buyers. One donkey carries 120 minas."
+      "description": "Buy tin in Assur and sell it in Anatolia. One donkey carries 120 minas."
     },
     "textile": {
       "name": "Textiles",
       "unit": "piece",
       "step": 1,
       "units_per_donkey": 30,
-      "description": "Ordinary cloth. A legal export from Assur needs both tin and textiles."
+      "description": "Ordinary textiles. Exports from Assur must include both tin and textiles."
     },
     "fine_textile": {
       "name": "Fine textiles",
       "unit": "piece",
       "step": 1,
       "units_per_donkey": 30,
-      "description": "Limited supply in Assur: two donkey loads arrive at irregular intervals."
+      "description": "Fine textiles are available only in Assur. Supply is limited and replenished in batches."
     },
     "copper": {
       "name": "Copper",
       "unit": "mina",
       "step": 1,
       "units_per_donkey": 120,
-      "description": "Buy in Durhumit; seek buyers in Purušhaddum. Heavy cargo suits rented wagons."
+      "description": "Buy copper in Durhumit and sell it in Purušhaddum. Rent a wagon to carry larger quantities."
     },
     "iron": {
       "name": "Iron",
       "unit": "mina",
       "step": 1,
       "units_per_donkey": 120,
-      "description": "An occasional illicit consignment at the Euphrates. Only the Smuggler’s Track accepts it."
+      "description": "Occasionally offered at the Euphrates crossing. Iron may travel only on Smuggler’s Track."
     }
   },
   "cities": {
     "assur": {
       "name": "Assur",
-      "subtitle": "Your house on the Tigris",
-      "description": "Bales are being sealed and tin is arriving from the east. Assemble a balanced consignment, keep money for the road, and bring your earnings home.",
+      "subtitle": "On the Tigris",
+      "description": "Buy donkeys, tin, and textiles here. Keep enough silver to pay travel costs and customs.",
       "markup_base": 0,
       "markup_dice": [
         1,
         1
       ],
       "map": [
-        0.87,
-        0.8
+        0.874,
+        0.832
       ],
-      "report": "Tin and cloth leave this city; early tin arrivals can offer favorable buying terms. Keep a road reserve."
+      "report": "Tin and textiles are available here. Tin prices usually rise after the early supply changes. Keep silver for travel costs."
     },
     "euphrates": {
       "name": "Euphrates crossing",
-      "subtitle": "Where caravans change roads",
-      "description": "Ferries, toll collectors, and competing reports. Sell here for a shorter venture, follow the legal road to Kaneš, or take your chances on the track.",
+      "subtitle": "The river crossing",
+      "description": "Sell your goods here, continue to Kaneš, or take Smuggler’s Track to Durhumit. The track carries a risk of arrest.",
       "markup_base": 0.4,
       "markup_dice": [
         1,
         12
       ],
       "map": [
-        0.62,
-        0.57
+        0.597,
+        0.711
       ],
-      "report": "Buyers offer modest premiums over Assur. A shorter venture ties up less time, but tolls can absorb much of the gain."
+      "report": "Selling here takes less travel time but usually earns less than selling farther inland."
     },
     "kanes": {
       "name": "Kaneš",
-      "subtitle": "The merchants’ quarter",
-      "description": "The kārum offers a deep market and a gateway to the interior. Imported tin and cloth must clear customs before the caravan continues.",
+      "subtitle": "Market and customs",
+      "description": "Imported tin and textiles must clear customs on arrival. Sell here or continue to Durhumit or Purušhaddum.",
       "markup_base": 1.0,
       "markup_dice": [
         1,
         20
       ],
       "map": [
-        0.36,
-        0.37
+        0.412,
+        0.464
       ],
-      "report": "A deep market for imports, with substantial premiums over Assur. Tin and cloth must clear local customs."
+      "report": "Tin and textiles usually sell for more than at the Euphrates crossing. Allow for customs charges and clearance time."
     },
     "durhumit": {
       "name": "Durhumit",
       "subtitle": "The copper market",
-      "description": "Copper can fill a wagon cheaply, but the road to its buyers is long. Hire transport here and weigh a second venture against the shrinking season.",
+      "description": "Sell imported goods, buy copper, and hire a wagon for the direct road to Purušhaddum.",
       "markup_base": 1.5,
       "markup_dice": [
         1,
         20
       ],
       "map": [
-        0.6,
-        0.15
+        0.396,
+        0.218
       ],
-      "report": "Import premiums are usually stronger than in Kaneš. Copper and wagon hire offer a second venture to Purušhaddum."
+      "report": "Imported goods usually sell for more than in Kaneš. Copper is available here for sale in Purušhaddum."
     },
     "purushhaddum": {
       "name": "Purušhaddum",
       "subtitle": "The western market",
-      "description": "High prices draw merchants west. Copper buyers, wool agents, and a sales tax await. The return to Assur will take time.",
+      "description": "Sell imported goods and copper here. Wool contracts are available during days 90–120. Commodity sales are taxed.",
       "markup_base": 2.0,
       "markup_dice": [
         2,
         12
       ],
       "map": [
-        0.12,
-        0.65
+        0.152,
+        0.464
       ],
-      "report": "The largest import premiums lie here, with a long journey and a sales levy. Wool contracts open during days 90–120."
+      "report": "Imported goods usually sell for the highest prices here. Sales tax and the long journey reduce the return. Wool contracts are available on days 90–120."
     }
   },
   "routes": [
@@ -272,7 +271,7 @@ export const RULES = {
       "toll": 0.05,
       "smuggling": false,
       "risk": "Exposed",
-      "description": "Ferries and road fees; occasional attacks on isolated caravans."
+      "description": "This road crosses the Euphrates. Tolls and attacks can reduce your profit."
     },
     {
       "id": "crossing_kanes",
@@ -289,7 +288,7 @@ export const RULES = {
       "toll": 0.05,
       "smuggling": false,
       "risk": "Dangerous",
-      "description": "The most exposed legal leg. Customs clearance adds time on arrival in Kaneš."
+      "description": "The most dangerous legal road. Unsealed imports require customs clearance when they arrive in Kaneš."
     },
     {
       "id": "kanes_durhumit",
@@ -306,7 +305,7 @@ export const RULES = {
       "toll": 0,
       "smuggling": false,
       "risk": "Relatively sheltered",
-      "description": "A legal road into the copper country."
+      "description": "A legal road between Kaneš and Durhumit."
     },
     {
       "id": "kanes_purushhaddum",
@@ -323,7 +322,7 @@ export const RULES = {
       "toll": 0,
       "smuggling": false,
       "risk": "Relatively sheltered",
-      "description": "A long legal journey to the western buyers."
+      "description": "A legal road between Kaneš and Purušhaddum."
     },
     {
       "id": "durhumit_purushhaddum",
@@ -340,7 +339,7 @@ export const RULES = {
       "toll": 0,
       "smuggling": false,
       "risk": "Relatively sheltered",
-      "description": "The only road passable by the rented copper wagons."
+      "description": "Rented copper wagons may use only this road."
     },
     {
       "id": "smugglers_track",
@@ -361,9 +360,9 @@ export const RULES = {
         6
       ],
       "risk": "Severe · arrest possible",
-      "description": "Bypasses Kaneš and its customs. Patrols can jail the entire enterprise."
+      "description": "Bypasses Kaneš and its customs. A patrol can arrest you and end the game."
     }
   ],
-  "version": "2.1.0",
-  "scenario_id": "YATS-WEB-2.1.0"
+  "version": "2.2.0",
+  "scenario_id": "YATS-WEB-2.2.0"
 };

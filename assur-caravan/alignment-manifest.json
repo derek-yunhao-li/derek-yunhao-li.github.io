@@ -1,7 +1,8 @@
 {
-  "rules_sha256": "ab8ba75ec38c53bc5d1eea20f2e18b18977e7becf828681cc3dc5490aa4881f1",
-  "engine_sha256": "026095e50d66d39cda0528ede5051e7b7b3dacf6ba8f9dde95559fa1db6c5129",
-  "guide_sha256": "68349e0e11139ba2b4fa33cbc50d47c5596d14fe976ce88492d35cc153eca52f",
-  "scenario_id": "YATS-WEB-2.1.0",
-  "student_sections": 18
+  "scenario_id": "YATS-WEB-2.2.0",
+  "student_sections": 19,
+  "scope": "Website release; the archived Word documents have not been revised.",
+  "rules_sha256": "7869947b9feb38b2ccb602eb4db8d1a889d78f9fe4100d4a09c127bb7b146324",
+  "engine_sha256": "646c9bd04bdeaa92fea19debc65d161f8127b1a2cb861c78e128c78a12ae8807",
+  "guide_sha256": "6aafa1d342a8a7eb990435388c8fcb3de2f16170789234f1a3576892f1e799b9"
 }

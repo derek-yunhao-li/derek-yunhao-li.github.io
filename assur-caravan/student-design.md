@@ -1,75 +1,79 @@
-# The Assur Caravan
+# The Assur Caravan — how to play
 
-YATS-WEB-2.1.0
+Scenario YATS-WEB-2.2.0
 
-## Your trading house
+## The objective
 
-It is spring in Assur. The passes are opening, letters are arriving from Anatolia, and caravans are preparing to leave. Your house receives 7,200 shekels of silver on credit. Your aim is to secure the greatest profit in Assur before the final accounting. A jailed team loses, regardless of its wealth. One player or team controls each house; other teams play independent games.
+The game covers one trading year, starting in Assur in 1895 BCE. You receive an interest-free loan of 7,200 shekels of silver. Buy goods, transport them to other markets, and maximize your profit in Assur at the end of the year. The starting loan must be repaid or deducted from your final assets. Each player or team plays a separate game. If you are arrested, you lose regardless of your profit.
 
 ## The calendar
 
-The game displays the actual caravan closing day and a later final accounting deadline for your season. Reading, planning, buying, selling, and arranging agents take no days. Traveling and waiting do. Original credit begins accruing interest after the caravan closing day. A new caravan cannot leave unless the roadmasters judge that even a slow journey at the selected pace can arrive before closure. After caravan closure, only travelers carrying no goods, animals, or wagon may use the remaining foot-travel period.
+The game shows two deadlines: the last day for caravans to arrive and the day of final accounting. Buying, selling, reading, and planning take no days. Only traveling and waiting advance the day. A caravan can depart only if the longest expected journey at the selected pace fits before caravan closure. After closure, you may travel until final accounting only if you carry no goods and own no animals or wagon. You may still carry silver.
 
 ## Silver and cargo
 
-All money is counted in silver shekels. Displayed unit quotes are rounded; the transaction total is authoritative because calculations retain full precision. One talent is 60 minas; one mina is 60 shekels of weight. Metal quantities in the market are minas; textiles are individual pieces. Buy animals before cargo. A donkey carries 120 minas of metal or 30 textiles, and mixed loads are proportional. Silver in your purse has no weight limit in this simulation. Roadside animal purchases are refused if they would turn a foot journey arriving during the grace period into a caravan journey. You may temporarily have too much cargo in a town if an animal dies, but you must fix the load before departure.
+All prices and balances are in shekels of silver. One talent is 60 minas, and one mina is 60 shekels of weight. Metal quantities are measured in minas; textiles are counted by piece. Buy donkeys before buying cargo. Each donkey carries 120 minas of metal or 30 pieces of textiles. Mixed loads share this capacity proportionally. Silver has no carrying limit. If an animal dies in town, reduce your cargo or buy another donkey before leaving. You cannot buy animals during a journey that uses the extra period for travel on foot.
 
-## Assembling an export
+## Exports from Assur
 
-A consignment leaving Assur that contains tin or cloth must include both. Tin and cloth must each represent at least one tenth of their combined current Assur value. Fine textiles count as cloth. An empty departure is allowed. The market shows whether your export meets the requirement.
+If you leave Assur with tin or textiles, you must carry both. Tin and textiles must each make up at least one tenth of their combined current value in Assur. Ordinary and fine textiles count together for this requirement. The market shows the two shares. You may also leave without cargo.
 
-## Markets and uncertain reports
+## Market prices and supply
 
-Only the current town’s firm buying and selling quotes are shown. Tin and ordinary cloth have no market supply limit; buyers do not run out of silver. Fine textiles and pack animals can be scarce. Fine cloth arrives in batches, while available donkey stock is renewed periodically. The tin supply changes early in the season, and the later exchange terms generally make tin dearer in silver. Prices are renewed weekly, and can change when the tin supply changes. Reopening a screen does not produce a new quote. Local dealers buy back goods at less favorable terms than they sell them.
+The Market tab shows prices in your current town. Buy is the price you pay; Sell net is what you receive after any local sales tax. Prices are updated weekly and when the early tin supply changes. Reopening a screen does not change the prices. Displayed unit prices are rounded; transaction totals use full precision. Tin and ordinary textiles have unlimited supply. Fine textiles and donkeys in Assur have limited stock that is replenished periodically. Later in the trading season, tin generally costs more silver. Local dealers usually pay less to buy goods back than they charge to sell them.
 
 ## Choosing a market
 
-The Euphrates crossing offers a shorter venture with more modest import premiums. Kaneš offers a deep market, but import clearance takes time and silver. Durhumit usually offers stronger import premiums and a source of copper. Purušhaddum attracts merchants with the strongest import premiums, but the journey is long and local sales are taxed. These reports describe tendencies, not promises. A rich distant sale can still be a poor choice if its proceeds cannot reach Assur in time.
+The Euphrates crossing is the shortest journey from Assur, but its prices are usually lower than those farther inland. Kaneš offers higher prices but charges customs on imported tin and textiles. Durhumit usually offers still higher prices and sells copper. Purušhaddum usually offers the highest prices for imported goods, but it is farther away and taxes commodity sales. Compare the possible return with travel time, costs, and the time needed to send silver back to Assur. Future prices are uncertain.
 
-## Roads and uncertainty
+## Routes and risks
 
-All roads on the schematic map can be traveled in either direction. The western road to the crossing is comparatively short and exposed; the mountain road to Kaneš is more dangerous. Legal roads farther inland are relatively sheltered, though never safe. The copper road is a long, variable haul. Smuggler’s Track bypasses Kaneš and its customs, but is especially exposed and can lead to arrest. Exact travel times are uncertain when you plan; once you commit, the guide announces the planned duration. Later problems can add time.
+All roads can be traveled in either direction. The Assur–Euphrates road is relatively short and less dangerous than the mountain road to Kaneš. The other legal roads are safer but still carry a risk of loss. The direct copper road between Durhumit and Purušhaddum is long, and its travel time varies. Smuggler’s Track connects the Euphrates crossing directly to Durhumit. It avoids Kaneš and its customs but has a greater risk of attack and can lead to arrest. Travel times are uncertain when you plan. Once you depart, the game shows the planned duration. Delays can add days.
 
-## Pace and protection
+## Pace and escorts
 
-Normal driving is gentler on the animals. Driving hard shortens caravan journeys but makes animal deaths much more likely; it gives no speed advantage to a lone traveler. An escort costs silver each day and reduces the dangers of attacks and patrols, but prevents neither animal deaths nor every loss. Firm escort charges and current daily bills are displayed before departure.
+Normal pace is easier on the animals. Driving hard reduces caravan travel time but increases the risk of animal deaths. It does not make travel on foot faster. An escort has a daily cost and reduces the risk of attack and arrest. It does not prevent every loss or reduce animal deaths. The journey screen shows the escort charge and estimated daily costs before departure.
 
-## Bills and road decisions
+## Travel costs
 
-Leader pay and applicable road tolls are charged when you depart, based on your cargo’s recorded purchase cost. Daily travel bills cover fodder, drivers, lodging, stabling, living costs, and any escort or wagon. Tin-denominated charges are converted to silver at the current Assur tin quote; carried tin is not consumed. Animals can die in town as well as on the road. Nightly lodgings may offer a few replacements. You may also sell spare animals at a lodging, provided the remaining animals can still carry your cargo. If the load no longer fits, buy available animals or abandon the least valuable cargo per donkey load first. Copper already on a wagon is protected from this abandonment.
+Departure fees include payment to the caravan leader when leaving Assur and any road toll. These fees use the recorded purchase cost of your cargo. Daily bills cover food, drivers, stabling, lodging, living costs, and any escort or wagon rent. Charges stated in tin are converted to silver using the current tin price in Assur; your carried tin is not consumed. Living costs and wagon rent continue while you wait in town.
 
-## Setbacks and arrest
+## Animal losses and road decisions
 
-Damaged crossings and worn pack gear can force a choice between paying for help and losing time. A detour that would arrive after closure is unavailable, but paid help remains possible. A total consignment loss removes all carried goods, pack animals, and any wagon. The party survives with its purse and continues on foot; house silver, wool held by agents, and remittances are unaffected. A traveler with no consignment has no cargo to lose. Arrest on Smuggler’s Track ends the season as a loss.
+Animals can die in town or during travel. At a roadside lodging you may buy available replacement donkeys or sell spare animals, provided you keep enough capacity for your cargo. If the caravan becomes overloaded, buy replacements or abandon cargo. The game discards the cargo with the lowest value per donkey load first; copper within a wagon’s capacity is protected. Repairs or a damaged crossing may require you to pay for help or spend extra days. A delay that would exceed the travel deadline is not allowed.
 
-## Customs and taxes
+## Cargo loss and arrest
 
-Unsealed tin and textiles are cleared when you arrive in Kaneš. Customs assesses their current local selling value; tin bears a heavier clearance burden than cloth. Clearance time is included in that journey; cleared quantities keep their seals on later visits. New purchases in Kaneš are already cleared, while outside purchases are not. Selling part of a mixed lot removes cleared and uncleared quantities proportionally. Purušhaddum taxes commodity sales, including copper and agent-held wool; animal sales are exempt. Market sell quotes are already net of the local sales levy.
+An attack can cause a total loss of your cargo, donkeys, and any wagon. You keep your purse and continue on foot. Silver in your Assur account, remittances, and wool held by an agent are unaffected. A traveler without cargo or transport has no consignment to lose. On Smuggler’s Track, a patrol can arrest you even if you are traveling on foot. Arrest ends the game as a loss.
+
+## Customs and sales tax
+
+When you arrive in Kaneš, uncleared tin and textiles pay customs based on their current local selling value. The charge is higher for tin than for textiles. Clearance time is included in the planned journey. Cleared goods keep their seals on later visits. Goods bought in Kaneš are already cleared; goods bought elsewhere are not. A partial sale removes cleared and uncleared quantities proportionally. Purušhaddum taxes commodity sales, including copper and wool sold by agents. Donkey sales are exempt. Market selling prices already include the deduction for sales tax.
 
 ## Copper and wagons
 
-Buy copper in Durhumit and seek its strongest buyers in Purušhaddum. A small wagon carries 600 minas of copper and costs 5 silver per week; a large wagon carries 1,200 minas and costs 9 silver per week. You may hire one wagon in Durhumit. It carries copper only, and may travel only on the direct copper road between these two towns. Rent is prorated daily, including waiting in town. There is no deposit or minimum term. Release the wagon in either town when the remaining load fits your other transport.
+Copper is available in Durhumit and sells for more in Purušhaddum. A small wagon carries 600 minas of copper and costs 5 silver per week. A large wagon carries 1,200 minas and costs 9 silver per week. You may rent one wagon in Durhumit. It carries copper only and can travel only on the direct road between Durhumit and Purušhaddum. Rent is charged daily, including days spent in town. There is no deposit or minimum rental period. You may release the wagon in either town once the remaining cargo fits your other transport.
 
-## An illicit iron offer
+## Iron
 
-Occasionally a trader at the Euphrates crossing offers a small iron consignment. Durhumit can pay an attractive premium, but the iron has no legal export permits. It may only travel on Smuggler’s Track; sell or discard it before using another road. A visit produces at most one offer, and repeatedly opening the market does not create another. The patrol danger is a single arrest check for the journey, not an additional duplicate check for the iron.
+A trader at the Euphrates crossing occasionally offers a small quantity of iron. You can sell it at a higher price in Durhumit, but it may travel only on Smuggler’s Track. Sell or discard it before taking a legal road. Each visit to the crossing produces at most one offer; reopening the market does not create another. There is one patrol check per journey on Smuggler’s Track, with no additional check for carrying iron.
 
-## Wool and agents
+## Wool contracts
 
-If you are in Purušhaddum during days 90–120, you can buy a wool contract. The agent buys wool at 0.50 silver per mina and stores it without using caravan capacity or charging storage rent. The agent automatically sells on day 180 at an uncertain premium over its purchase cost, pays the local sales levy, and sends the net proceeds to Assur. With the transfer fee deducted, that silver is due on day 201. You do not need to return for the sale. Closing the books before the money arrives leaves it uncounted.
+While in Purušhaddum on days 90–120, you may buy a wool contract at 0.50 silver per mina. An agent stores it without using caravan capacity or charging storage rent. On day 180, the agent sells it at an uncertain premium, deducts the sales tax and transfer fee, and sends the proceeds to Assur. The silver arrives on day 201. You do not need to remain in Purušhaddum. If you end the game before the proceeds arrive, they do not count toward your profit.
 
-## Sending silver home
+## Sending silver to Assur
 
-In a foreign town you can remit purse silver to Assur. The transfer costs 3% and takes 21 days; the rest is credited automatically to your house account. A transfer arriving after the final accounting deadline cannot be ordered. In Assur you can deposit or withdraw silver directly and repay creditors. House silver can pay your bills directly only while you are in Assur.
+In a foreign town, use Agents to send silver from your purse to Assur. The fee is 3%, and delivery takes 21 days. The remaining silver is credited automatically to your Assur account. A transfer cannot be ordered if it would arrive after final accounting. In Assur, you may deposit or withdraw silver directly and repay debt. Your Assur account can pay your bills directly only while you are in Assur and not traveling.
 
-## Credit and keeping a reserve
+## Keeping enough silver
 
-The original loan is interest free through the caravan closing day. Afterward its unpaid principal accrues simple interest at 33% per year, prorated daily using a 365-day year. Necessary bills exceeding available local silver create emergency debt for the shortfall plus a 10% handling fee. That debt accrues the same annual interest from the following day. Purchases and voluntary investments cannot use emergency credit. Repayments in Assur pay interest first, then emergency debt, then original principal.
+Keep silver in your purse for travel costs, customs, and replacement animals. If a necessary bill exceeds your available local funds, the unpaid amount becomes emergency debt with a one-time 10% handling fee. You cannot use this credit for voluntary purchases or investments. Repayments in Assur pay emergency debt first, then the starting loan.
 
-## Closing the books
+## Final profit
 
-Your score is realized profit in Assur, not the estimated wealth shown for planning. Count silver in the house account. If you and your caravan are in Assur, count your purse and value your remaining cargo with local buyers and your animals at current Assur selling quotes. Deduct remaining original principal, emergency debt, and accrued interest. Previously repaid principal is not deducted twice. Assets abroad, unmarketable cargo, unsold wool, and undelivered remittances count zero. You may finish abroad if you have already secured money in Assur. You can close early; the game otherwise closes automatically at the final deadline.
+Your score is the profit secured in Assur at final accounting. Count the silver in your Assur account. If you are in Assur and not traveling, also count your purse, goods with local buyers, and donkeys at current Assur selling prices. Subtract the unpaid starting loan and any emergency debt. Loan amounts already repaid are not deducted again. Silver and goods abroad, unsold wool, unmarketable cargo, and transfers that have not arrived do not count. You may finish abroad if you have already sent silver to Assur. You can end the game early with Close books; otherwise it ends automatically on the final accounting day.
 
 ## Saving and classroom play
 
-Progress saves in this browser after each successful action when browser storage is available. Download a save for backup or moving between devices, then import it to resume. Browser data is not synchronized automatically and can be erased by browser settings. Keep one active tab per house. Save files and browser code can be inspected; this is a classroom simulation, not a protected competition. Your teacher compares final realized profits; jailed teams lose. The map is schematic and the scenario uses teaching abstractions.
+The game saves after each successful action when browser storage is available. Use Save to download a backup or move your game to another device, then use Import to continue. Saves do not synchronize automatically across devices and can be erased by browser settings. Use one active tab per game. Export the final report for your referee to compare profits. The map shows relative locations and routes; it is not to scale. Save files and the game’s source code can be inspected.

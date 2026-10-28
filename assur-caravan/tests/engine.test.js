@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {Game,GameError,EPS} from '../engine.js';
 import {RULES} from '../rules.js';
 const safe=()=>{const r=structuredClone(RULES);r.caravan.donkey_weekly_mortality=0;r.caravan.hard_driving_weekly_mortality=0;r.caravan.incident_chance_per_day=0;for(const road of r.routes)road.loss_chance=0;return r;};
-const fresh=()=>new Game('tests','Test house',safe());
+const fresh=()=>new Game('tests','Test trader',safe());
 function load(g){g.act('buy','donkey',6);g.act('buy','tin',480);g.act('buy','textile',45);}
 function arrive(g){let count=0;while(g.s.journey&&!g.s.finished){assert.ok(count++<120);if(g.s.event){const e=g.s.event;g.act('resolve',e.kind==='loss'?'continue':e.kind==='overload'?'discard':'pay');}else g.act('advance',7);}}
 function sail(g,id){g.act('start',id);arrive(g);}
@@ -13,10 +13,10 @@ test('a fresh actual-scenario save restores all data and RNG',()=>{const g=new G
 test('same seed and actions repeat the same outcomes',()=>{const a=new Game('identical'),b=new Game('identical');load(a);load(b);sail(a,'assur_crossing');sail(b,'assur_crossing');assert.deepEqual(a.snapshot(),b.snapshot());});
 test('cargo cannot be purchased without transport',()=>{const g=fresh();assert.throws(()=>g.act('buy','tin',1),GameError);});
 test('invalid actions preserve every state field and RNG',()=>{const g=fresh();for(const amount of [0,-1,NaN,Infinity,1.5]){const before=g.snapshot();assert.throws(()=>g.act('buy','donkey',amount));assert.deepEqual(g.snapshot(),before);}});
-test('ordinary cloth is traded in whole pieces',()=>{const g=fresh();g.act('buy','donkey',1);assert.throws(()=>g.act('buy','textile',.1));});
-test('metal and cloth share donkey loads proportionally',()=>{const g=fresh();g.act('buy','donkey',1);g.act('buy','tin',60);g.act('buy','textile',15);near(g.load(),1);assert.throws(()=>g.act('buy','tin',1));});
+test('ordinary textiles are traded in whole pieces',()=>{const g=fresh();g.act('buy','donkey',1);assert.throws(()=>g.act('buy','textile',.1));});
+test('metal and textiles share donkey loads proportionally',()=>{const g=fresh();g.act('buy','donkey',1);g.act('buy','tin',60);g.act('buy','textile',15);near(g.load(),1);assert.throws(()=>g.act('buy','tin',1));});
 test('capacity cannot be removed underneath existing cargo',()=>{const g=fresh();g.act('buy','donkey',1);g.act('buy','tin',1);assert.throws(()=>g.act('sell','donkey',1));});
-test('export must include tin and cloth with the minimum value share',()=>{const g=fresh();g.act('buy','donkey',2);g.act('buy','tin',100);assert.throws(()=>g.act('start','assur_crossing'));g.act('buy','textile',10);g.act('start','assur_crossing');assert.ok(g.s.journey);});
+test('export must include tin and textiles with the minimum value share',()=>{const g=fresh();g.act('buy','donkey',2);g.act('buy','tin',100);assert.throws(()=>g.act('start','assur_crossing'));g.act('buy','textile',10);g.act('start','assur_crossing');assert.ok(g.s.journey);});
 test('inspecting quotes does not consume random rolls',()=>{const g=fresh(),before=g.snapshot();for(let i=0;i<10;i++){g.quote('tin');g.maxBuy('tin');g.timeRange('assur_crossing');g.wealth();}assert.deepEqual(g.snapshot(),before);});
 test('local round-trip trading cannot instantly generate a profit',()=>{const g=fresh();g.act('buy','donkey',1);const cash=g.s.purse;g.act('buy','tin',20);g.act('sell','tin',20);assert.ok(g.s.purse<cash);});
 test('fine textile supply is finite',()=>{const g=fresh();g.act('buy','donkey',3);g.act('buy','fine_textile',60);assert.equal(g.stock('fine_textile'),0);assert.throws(()=>g.act('buy','fine_textile',1));});
@@ -36,7 +36,7 @@ test('foot grace cannot be exploited to acquire animals at a lodging',()=>{const
 test('spare donkeys can be sold at a nightly lodging',()=>{const g=fresh();g.act('buy','donkey',3);g.act('start','assur_crossing');g.act('advance',1);const before=g.s.purse,price=g.s.journey.lodgeSell;g.act('roadSell',2);assert.equal(g.s.donkeys,1);near(g.s.purse-before,price*2);});
 test('roadside animal sale cannot strand cargo',()=>{const g=fresh();load(g);g.act('start','assur_crossing');g.act('advance',1);assert.throws(()=>g.act('roadSell',1));});
 test('overload can be resolved by abandoning low-value goods',()=>{const g=fresh();load(g);g.act('start','assur_crossing');g.s.donkeys=1;g.overload();g.act('resolve','discard');assert.ok(g.load()<=1+EPS);assert.equal(g.s.event,null);});
-test('forced total loss removes the consignment but preserves the purse',()=>{const r=safe();r.routes[0].loss_chance=1;const g=new Game('loss','Loss house',r);load(g);g.act('start','assur_crossing');g.act('advance',1);assert.equal(g.s.event.kind,'loss');assert.equal(g.s.donkeys,0);near(g.cargoBasis(),0);assert.ok(g.s.purse>0);g.act('resolve','continue');arrive(g);assert.equal(g.s.city,'euphrates');});
+test('forced total loss removes the consignment but preserves the purse',()=>{const r=safe();r.routes[0].loss_chance=1;const g=new Game('loss','Loss test',r);load(g);g.act('start','assur_crossing');g.act('advance',1);assert.equal(g.s.event.kind,'loss');assert.equal(g.s.donkeys,0);near(g.cargoBasis(),0);assert.ok(g.s.purse>0);g.act('resolve','continue');arrive(g);assert.equal(g.s.city,'euphrates');});
 test('forced patrol arrest ends the game as a losing result',()=>{const r=safe();r.routes.at(-1).arrest_dice=[100,1];const g=new Game('arrest','Patrol',r);g.s.city='euphrates';sail(g,'smugglers_track');assert.equal(g.s.jailed,true);assert.equal(g.s.finished,true);assert.equal(g.s.result.jailed,true);});
 test('road delay cannot push a caravan past closure',()=>{const g=fresh();load(g);g.act('start','assur_crossing');g.s.day=g.s.close-g.s.journey.left;g.s.event={kind:'guide',title:'Bridge',text:'Bridge',fee:18,delay:2};assert.throws(()=>g.act('resolve','wait'));g.act('resolve','pay');assert.equal(g.s.event,null);});
 test('deposit and repayment preserve net worth',()=>{const g=fresh();g.act('deposit',1000);near(g.wealth(),0);g.act('repay',2000);near(g.wealth(),0);near(g.debt(),5200);});
@@ -44,8 +44,8 @@ test('remittance charges its fee and arrives only on the stated day',()=>{const 
 test('a late remittance is rejected without any state mutation',()=>{const g=fresh();g.s.city='kanes';g.s.day=g.s.deadline-10;const b=g.snapshot();assert.throws(()=>g.act('remit',1000));assert.deepEqual(g.snapshot(),b);});
 test('wool is stored without transport, sold, taxed, and sent home',()=>{const g=fresh();g.s.city='purushhaddum';g.s.day=90;g.act('buyWool',1000);near(g.load(),0);g.s.day=179;g.act('advance',1);assert.ok(g.s.wool[0].sold);const net=g.s.wool[0].proceeds;assert.ok(net>1000);near(g.s.bank,0);g.act('advance',21);near(g.s.bank,net);});
 test('wool contract buying is limited by place and date',()=>{const g=fresh();g.s.day=90;assert.throws(()=>g.act('buyWool',100));g.s.city='purushhaddum';g.s.day=121;assert.throws(()=>g.act('buyWool',100));});
-test('original loan starts simple interest after caravan closing',()=>{const g=fresh();g.s.day=g.s.close-1;g.act('advance',1);near(g.s.interest,0);g.act('advance',1);near(g.s.interest,7200*.33/365);});
-test('necessary unpaid bills create emergency debt and its fee',()=>{const g=fresh();g.s.purse=0;g.pay(100,'Road costs','Bill',true);near(g.s.emergency,110);g.s.purse=1;g.act('advance',1);near(g.s.interest,110*.33/365);});
+test('the starting loan stays fixed through closure and final accounting',()=>{const g=fresh();for(const day of [g.s.close,g.s.close+1,g.s.deadline]){while(g.s.day<day)g.act('advance',Math.min(60,day-g.s.day));near(g.debt(),7200);assert.equal(Object.hasOwn(g.s,'interest'),false);}near(g.s.result.debt,7200);assert.equal(Object.hasOwn(g.s.result,'interest'),false);});
+test('emergency credit has one handling fee and no daily debt growth',()=>{const g=fresh();g.s.purse=0;g.pay(100,'Road costs','Bill',true);near(g.s.emergency,110);g.s.purse=100;g.act('advance',30);near(g.s.emergency,110);near(g.debt(),7310);});
 test('voluntary purchases cannot borrow emergency credit',()=>{const g=fresh();g.s.purse=0;assert.throws(()=>g.act('buy','donkey',1));near(g.s.emergency,0);});
 test('foreign purse and undelivered silver do not count in final profit',()=>{const g=fresh();g.s.city='kanes';near(g.settlement().profit,-7200);g.s.bank=9000;near(g.settlement().profit,1800);});
 test('unmarketable cargo in Assur is reported but contributes zero',()=>{const g=fresh();g.s.inventory.copper={qty:60,basis:20,cleared:0};near(g.settlement().unrecovered,20);near(g.settlement().profit,0);});
@@ -57,3 +57,6 @@ test('full legal export, copper haul, wool agent, remittance and return',()=>{co
 test('300 real-risk seasons complete without invalid balances or stuck events',()=>{for(let seed=0;seed<300;seed++){const g=new Game(`season-${seed}`);load(g);g.act('start','assur_crossing','normal',!!(seed%2));arrive(g);for(const k of Object.keys(g.rules.goods))if(g.qty(k)&&g.quote(k).net!==null)g.act('sell',k,g.qty(k));if(g.s.donkeys)g.act('sell','donkey',g.s.donkeys);sail(g,'assur_crossing');g.act('finish');g.checkInvariants();near(g.s.result.profit,g.s.purse+g.s.bank-g.debt());}});
 test('the scenario has exactly the five supported traded goods',()=>assert.deepEqual(Object.keys(RULES.goods),['tin','textile','fine_textile','copper','iron']));
 test('an unsupported commodity is rejected atomically',()=>{const g=fresh(),before=g.snapshot();assert.throws(()=>g.act('buy','unsupported_metal',1),GameError);assert.deepEqual(g.snapshot(),before);});
+
+test('repayments pay emergency debt before the original loan',()=>{const g=fresh();g.s.emergency=110;g.act('repay',200);near(g.s.emergency,0);near(g.s.principal,7110);near(g.debt(),7110);});
+test('prior rules saves are rejected without changing the supplied data',()=>{const d=new Game('older-version').snapshot();d.version='2.1.0';const before=structuredClone(d);assert.throws(()=>Game.restore(d),/earlier or different version/);assert.deepEqual(d,before);});
