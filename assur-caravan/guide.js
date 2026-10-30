@@ -18,7 +18,7 @@ export const GUIDE = [
   ],
   [
     "Market prices and supply",
-    "The Market tab shows prices in your current town. Buy is the price you pay; Sell net is what you receive after any local sales tax. Prices are updated weekly and when the early tin supply changes. Reopening a screen does not change the prices. Displayed unit prices are rounded; transaction totals use full precision. Tin and ordinary textiles have unlimited supply. Fine textiles and donkeys in Assur have limited stock that is replenished periodically. Later in the trading season, tin generally costs more silver. Local dealers usually pay less to buy goods back than they charge to sell them."
+    "The Market tab shows prices in your current town. Buy is the price you pay; Sell net is what you receive after any local sales tax. Prices are updated weekly and when the early tin supply changes. Reopening a screen does not change the prices. Displayed unit prices are rounded; transaction totals use full precision. Tin and ordinary textiles have unlimited supply. Fine textiles and donkeys in Assur have limited stock that is replenished periodically. Textiles usually offer a higher return than tin, particularly fine textiles. Tin remains useful as part of a mixed cargo. Later in the trading season, tin generally costs a little more silver. Local dealers usually pay less to buy goods back than they charge to sell them."
   ],
   [
     "Choosing a market",
@@ -54,7 +54,7 @@ export const GUIDE = [
   ],
   [
     "Iron",
-    "A trader at the Euphrates crossing occasionally offers a small quantity of iron. You can sell it at a higher price in Durhumit, but it may travel only on Smuggler’s Track. Sell or discard it before taking a legal road. Each visit to the crossing produces at most one offer; reopening the market does not create another. There is one patrol check per journey on Smuggler’s Track, with no additional check for carrying iron."
+    "A trader at the Euphrates crossing occasionally offers a small quantity of iron. You can sell it at a higher price in Durhumit, but it may travel only on Smuggler’s Track. Sell or discard it before taking a legal road. You may buy iron at most twice during the entire trading season. Each successful purchase counts, even if you later sell, discard, or lose the iron. Declining an offer does not use your allowance. Each visit to the crossing produces at most one offer; waiting or reopening the market does not create another. There is one patrol check per journey on Smuggler’s Track, with no additional check for carrying iron."
   ],
   [
     "Wool contracts",

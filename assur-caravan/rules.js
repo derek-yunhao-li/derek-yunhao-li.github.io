@@ -1,4 +1,6 @@
 // Editable scenario data. The starting loan has no interest.
+// Tin ratios are tin shekels per silver shekel; 60 / ratio is silver per mina.
+// export_markup_factors multiply each city's markup, not the whole selling price.
 export const RULES = {
   "_help": "Edit the scenario here, then start a new game. Existing saves must match the current rules. Dice fields are [number_of_dice, sides]. Money is silver shekels; metal quantities are minas.",
   "title": "YATS · The Assur Caravan",
@@ -48,24 +50,29 @@ export const RULES = {
     "quote_days": 7,
     "assur_resale_factor": 0.85,
     "import_purchase_factor": 1.12,
-    "tin_early_ratio_base": 12,
-    "tin_late_ratio_base": 9,
+    "tin_early_ratio_base": 15,
+    "tin_late_ratio_base": 14,
     "tin_ratio_dice": [
       1,
       2
     ],
     "tin_change_day_base": 25,
     "tin_change_day_spread": 3,
-    "textile_base": 15,
+    "textile_base": 8,
     "textile_dice": [
       1,
-      2
+      1
     ],
-    "fine_textile_base": 22,
+    "fine_textile_base": 11,
     "fine_textile_dice": [
       1,
-      3
+      1
     ],
+    "export_markup_factors": {
+      "tin": 1,
+      "textile": 2.25,
+      "fine_textile": 2.5
+    },
     "fine_restock_loads": 2,
     "fine_restock_dice": [
       3,
@@ -102,6 +109,7 @@ export const RULES = {
     ],
     "iron_offer_chance": 0.1,
     "iron_offer_minas": 1,
+    "iron_purchase_limit": 2,
     "iron_silver_per_mina": 600,
     "iron_markup_base": 0.8,
     "iron_markup_dice": [
@@ -175,7 +183,7 @@ export const RULES = {
       "unit": "mina",
       "step": 1,
       "units_per_donkey": 120,
-      "description": "Occasionally offered at the Euphrates crossing. Iron may travel only on Smuggler’s Track."
+      "description": "Occasionally offered at the Euphrates crossing. You may buy iron at most twice per season. It may travel only on Smuggler’s Track."
     }
   },
   "cities": {
@@ -363,6 +371,6 @@ export const RULES = {
       "description": "Bypasses Kaneš and its customs. A patrol can arrest you and end the game."
     }
   ],
-  "version": "2.2.0",
-  "scenario_id": "YATS-WEB-2.2.0"
+  "version": "2.3.0",
+  "scenario_id": "YATS-WEB-2.3.0"
 };

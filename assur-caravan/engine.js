@@ -22,7 +22,7 @@ export class Game {
       journey:null,event:null,finished:false,jailed:false,result:null,log:[],ledger:[],
       epoch:'',quotes:{},source:{},donkeyPeriod:-1,donkeyStock:0,
       fineStock:m.fine_restock_loads*r.goods.fine_textile.units_per_donkey,
-      nextFine:this.roll(m.fine_restock_dice)*m.fine_restock_days_per_roll,ironStock:0,
+      nextFine:this.roll(m.fine_restock_dice)*m.fine_restock_days_per_roll,ironStock:0,ironPurchases:0,
       tinChange:m.tin_change_day_base+this.integer(-m.tin_change_day_spread,m.tin_change_day_spread),wool:[],transfers:[]};
     this.refreshMarkets();
     this.note('Game begins',`${this.s.team} receives an interest-free loan of ${r.starting_silver} shekels of silver. Caravans must arrive by day ${close}; final accounting is on day ${this.s.deadline}.`);
@@ -83,7 +83,10 @@ export class Game {
       for(const key of Object.keys(r.goods)) {
         let buy=null,sell=null;
         if(EXPORTS.includes(key)) {
-          const price=p[key]*(1+(city==='assur'?0:c.markup_base+this.signed(c.markup_dice)/100));
+          // Textiles earn a larger typical return than tin. Apply the factor to
+          // the city's markup, leaving weekly price variation and tax separate.
+          const markup=c.markup_base*m.export_markup_factors[key];
+          const price=p[key]*(1+(city==='assur'?0:markup+this.signed(c.markup_dice)/100));
           buy=city==='assur'?price:price*m.import_purchase_factor;
           sell=city==='assur'?price*m.assur_resale_factor:price;
           if(key==='fine_textile'&&city!=='assur')buy=null;
@@ -107,7 +110,7 @@ export class Game {
   stock(key) {
     if(key==='donkey')return this.s.city==='assur'?this.s.donkeyStock:Infinity;
     if(key==='fine_textile'&&this.s.city==='assur')return this.s.fineStock;
-    if(key==='iron')return this.s.city==='euphrates'?this.s.ironStock:0;
+    if(key==='iron')return this.s.city==='euphrates'&&this.s.ironPurchases<this.rules.markets.iron_purchase_limit?this.s.ironStock:0;
     return this.quote(key).buy===null?0:Infinity;
   }
   wagonCapacity(wagon=this.s.wagon) { return wagon?this.rules.wagons[wagon].capacity_minas:0; }
@@ -135,12 +138,16 @@ export class Game {
   }
   buy(key,qty) {
     this.active(true);qty=this.tradeAmount(key,qty);const q=this.quote(key);
+    if(key==='iron')requireThat(this.s.ironPurchases<this.rules.markets.iron_purchase_limit,'You have reached the iron purchase limit for this season.');
     requireThat(q.buy!==null,'No seller offers this here.');requireThat(qty<=this.stock(key)+EPS,'The market does not have that much stock.');
     requireThat(key==='donkey'||this.load({[key]:qty})<=this.s.donkeys+EPS,'Buy more transport or reduce this purchase.');
     this.pay(qty*q.buy,'Purchase',`${qty} ${key}`);
     if(key==='donkey'){this.s.donkeys+=qty;if(this.s.city==='assur')this.s.donkeyStock-=qty;}
     else {const l=this.s.inventory[key];l.qty+=qty;l.basis+=qty*q.buy;if(this.s.city==='kanes')l.cleared+=qty;
-      if(key==='fine_textile'&&this.s.city==='assur')this.s.fineStock-=qty;if(key==='iron')this.s.ironStock-=qty;}
+      if(key==='fine_textile'&&this.s.city==='assur')this.s.fineStock-=qty;
+      // Count completed purchases, not offers. Selling or losing the cargo does
+      // not restore the allowance; the counter is part of every saved game.
+      if(key==='iron'){this.s.ironPurchases++;this.s.ironStock-=qty;}}
     this.note('Goods purchased',`Bought ${qty} ${key==='donkey'?'donkeys':this.rules.goods[key].name} for ${(qty*q.buy).toFixed(2)} silver.`);
   }
   remove(key,qty) {
@@ -322,7 +329,12 @@ export class Game {
       let tax=0;for(const k of EXPORTS){const l=this.s.inventory[k],rate=k==='tin'?this.rules.taxes.kanes_tin:this.rules.taxes.kanes_textiles;tax+=(l.qty-l.cleared)*this.quote(k).sell*rate;l.cleared=l.qty;}
       this.pay(tax,'Customs','Kaneš clearance',true);this.note('Customs cleared',`Paid ${tax.toFixed(2)} silver. These goods keep their seals on later visits.`);
     }
-    if(this.s.city==='euphrates'&&this.random()<this.rules.markets.iron_offer_chance){this.s.ironStock=this.rules.markets.iron_offer_minas;this.note('A discreet offer','A trader offers iron. The unlicensed cargo must take Smuggler’s Track to Durhumit.','warning');}
+    const m=this.rules.markets;
+    if(this.s.city==='euphrates'&&this.s.ironPurchases<m.iron_purchase_limit&&this.random()<m.iron_offer_chance){
+      this.s.ironStock=m.iron_offer_minas;
+      const remaining=m.iron_purchase_limit-this.s.ironPurchases;
+      this.note('A discreet offer',`A trader offers iron. You may buy iron at most ${remaining} more ${remaining===1?'time':'times'} this season. The cargo must take Smuggler’s Track to Durhumit.`,'warning');
+    }
     this.note('Arrival',`Reached ${this.name()} on day ${this.s.day}. The market is open.`,'good');
   }
   settlement() {
@@ -363,6 +375,8 @@ export class Game {
     }
     for(const key of Object.keys(this.rules.goods))requireThat(finite(s.source?.[key],EPS),'Invalid reference price.');
     for(const key of ['donkeyStock','fineStock','ironStock','nextFine','tinChange','donkeyPeriod'])requireThat(Number.isInteger(s[key])&&s[key]>=0,'Invalid market stocks or dates.');
+    requireThat(Number.isInteger(s.ironPurchases)&&s.ironPurchases>=0&&s.ironPurchases<=this.rules.markets.iron_purchase_limit,'Invalid seasonal iron purchase count.');
+    requireThat(s.ironStock<=this.rules.markets.iron_offer_minas,'Invalid iron offer.');
     for(const lot of s.wool)requireThat(finite(lot.cost,EPS)&&finite(lot.qty,EPS)&&typeof lot.sold==='boolean'&&(!lot.sold||finite(lot.proceeds)),'Invalid wool contract.');
     for(const l of s.log)requireThat(Number.isInteger(l.day)&&l.day>=0&&l.day<=s.day&&typeof l.title==='string'&&typeof l.text==='string'&&['info','good','warning','danger'].includes(l.kind),'Invalid journal.');
     for(const l of s.ledger)requireThat(Number.isInteger(l.day)&&finite(Math.abs(l.amount))&&typeof l.category==='string'&&typeof l.text==='string','Invalid ledger.');
